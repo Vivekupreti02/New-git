@@ -13,15 +13,22 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Copy files to EC2
+    - name: Create tar and send to EC2
       uses: appleboy/scp-action@v0.1.3
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_KEY }}
-        source: "."
+        source: "./"
         target: "/home/ubuntu/app"
-
-
-  
-
+        tar_tmp_path: "/tmp"
+        strip_components: 0
+        rm: true
+        overwrite: true
+        timeout: 60s
+        recursive: true
+        # exclude files you don’t want
+        args: >
+          --exclude='.git'
+          --exclude='.github'
+          --exclude='README.md'
